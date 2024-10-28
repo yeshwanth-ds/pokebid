@@ -15,6 +15,10 @@ const bidTableSchema = new mongoose.Schema({
     type: String,
     required: false, // Optional field if not all bids have images
   },
+  bidVerified: {
+    type: Boolean,
+    default: false, 
+  },
   initialBid: {
     type: Number,
     required: true,
