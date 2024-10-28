@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBid, placeBid } from '../controllers/bidTable.controllers.js';
+import { createBid, getAllOngoingBids, placeBid } from '../controllers/bidTable.controllers.js';
 
 const router = express.Router();
 
@@ -8,5 +8,7 @@ router.post('/createBid', createBid);
 
 // Route to place a bid
 router.post('/placeBid', placeBid);
+
+router.get('/onGoingBids', getAllOngoingBids);
 
 export default router;

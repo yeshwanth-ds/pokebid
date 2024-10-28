@@ -83,3 +83,18 @@ export const placeBid = async (req, res) => {
   }
 };
 
+export const getAllOngoingBids = async (req, res) => {
+  try {
+    const ongoingBids = await BidTable.find({ onGoing: true, bidVerified: true });
+
+    if (ongoingBids.length === 0) {
+      return res.status(404).json({ message: "No ongoing bids found" });
+    }
+
+    res.status(200).json({ message: "All ongoing bids fetched successfully", bids: ongoingBids });
+  } catch (error) {
+    console.error("Error in getAllOngoingBids controller:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
