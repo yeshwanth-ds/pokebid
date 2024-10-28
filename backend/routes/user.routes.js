@@ -1,7 +1,6 @@
 import express from "express";
 import { login, logout, signup, getUserById, updateProfile, deleteUser, getVerifyEmail } from "../controllers/user.controllers.js";
 
-
 const router = express.Router();
 
 router.post("/login", login);
