@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.routes.js";
+import authRoutes from "./routes/user.routes.js";
 import connectToMongoose from "./db/connectMongoDB.js";
 
 const app = express();
