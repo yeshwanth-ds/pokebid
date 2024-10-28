@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/user.routes.js";
 import bidRoutes from "./routes/bidTable.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 import connectToMongoose from "./db/connectMongoDB.js";
 
 
@@ -15,7 +16,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/users", authRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api", bidRoutes);
+
 
 app.listen(PORT, () => {
     connectToMongoose();
