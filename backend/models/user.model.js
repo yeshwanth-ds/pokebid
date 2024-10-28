@@ -38,10 +38,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
-        currentAmount: {
-            type: Number, // Fixed type to Number
-            default: 1000,
-        },
         rareCollections: [
             {
                 name: { type: String, required: true },
