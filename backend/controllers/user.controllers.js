@@ -103,7 +103,7 @@ export const getUserById = async (req, res) => {
     try {
         const token = req.cookies.jwt;
         if (!token) {
-            return res.status(401).json({ status: "error", message: "Access denied. No token provided." });
+            return res.status(401).json({ error: "Access denied. No token provided." });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -111,28 +111,25 @@ export const getUserById = async (req, res) => {
 
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ status: "error", message: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
 
         res.status(200).json({
-            status: "success",
-            data: {
-                userId: user.username,
-                fullName: user.fullName,
-                email: user.email || "",
-                profilePicture: user.profilePic,
-                gender: user.gender,
-                verified: user.verified,
-                currentAmount: parseFloat(user.currentAmount),
-                rareCollections: user.rareCollections.reduce((acc, { name, url }) => {
-                    acc[name] = url;
-                    return acc;
-                }, {}),
-            },
+            userId: user.username,
+            fullName: user.fullName,
+            email: user.email || "",
+            profilePicture: user.profilePic,
+            gender: user.gender,
+            verified: user.verified,
+            currentAmount: parseFloat(user.currentAmount),
+            rareCollections: user.rareCollections.reduce((acc, { name, url }) => {
+                acc[name] = url;
+                return acc;
+            }, {}),
         });
     } catch (error) {
         console.error("Error in getUserById controller:", error.message);
-        res.status(500).json({ status: "error", message: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
@@ -140,7 +137,7 @@ export const updateProfile = async (req, res) => {
     try {
         const token = req.cookies.jwt;
         if (!token) {
-            return res.status(401).json({ status: "error", message: "Access denied. No token provided." });
+            return res.status(401).json({ error: "Access denied. No token provided." });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -152,7 +149,7 @@ export const updateProfile = async (req, res) => {
         const isValidOperation = Object.keys(updates).every((key) => allowedUpdates.includes(key));
 
         if (!isValidOperation) {
-            return res.status(400).json({ status: "error", message: "Invalid updates!" });
+            return res.status(400).json({ error: "Invalid updates!" });
         }
 
         const user = await User.findByIdAndUpdate(userId, updates, {
@@ -161,28 +158,25 @@ export const updateProfile = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({ status: "error", message: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
 
         res.status(200).json({
-            status: "success",
-            data: {
-                userId: user.username,
-                fullName: user.fullName,
-                email: user.email || "",
-                profilePicture: user.profilePic,
-                gender: user.gender,
-                verified: user.verified,
-                currentAmount: parseFloat(user.currentAmount),
-                rareCollections: user.rareCollections.reduce((acc, { name, url }) => {
-                    acc[name] = url;
-                    return acc;
-                }, {}),
-            },
+            userId: user.username,
+            fullName: user.fullName,
+            email: user.email || "",
+            profilePicture: user.profilePic,
+            gender: user.gender,
+            verified: user.verified,
+            currentAmount: parseFloat(user.currentAmount),
+            rareCollections: user.rareCollections.reduce((acc, { name, url }) => {
+                acc[name] = url;
+                return acc;
+            }, {}),
         });
     } catch (error) {
         console.error("Error in updateProfile controller:", error.message);
-        res.status(500).json({ status: "error", message: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
@@ -224,11 +218,9 @@ export const getVerifyEmail = async (req, res) => {
         }
 
         if (!user.email || !user.verificationToken) {
-            console.error("User email or verification token is undefined");
             return res.status(400).json({ error: "User email or verification token is not defined" });
         }
 
-        console.log("Sending verification email to:", user.email);
         await sendVerificationEmail(user.email, user.verificationToken);
         res.status(200).json({ message: "Verification email sent successfully" });
     } catch (error) {

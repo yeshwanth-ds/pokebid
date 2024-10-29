@@ -2,8 +2,6 @@ import Admin from "../models/admin.model.js";
 import BidTable from "../models/bidTable.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/genarateTokens.js";
-import protectAdminRoute from "../middleware/protectAdminRoute.js"; // Import your middleware
-
 
 // Create a new admin member
 export const createAdminMember = async (req, res) => {
