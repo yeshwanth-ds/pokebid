@@ -40,14 +40,20 @@ export const createBid = async (req, res) => {
 // Place a bid
 export const placeBid = async (req, res) => {
   try {
-    const { bidId, bidAmount } = req.body;
-    
+    const { bidAmount } = req.body;
+    const { id: bidId } = req.params;
+
     const token = req.cookies.jwt;
     if (!token) {
       return res.status(401).json({ error: "Access denied. No token provided." });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
     const userId = decoded.userId;
 
     const bid = await BidTable.findById(bidId);
@@ -58,9 +64,7 @@ export const placeBid = async (req, res) => {
     // Check if the bid is still ongoing
     const currentTime = new Date();
     if (bid.expireTime < currentTime) {
-      // Update bid to not ongoing
-      bid.onGoing = false;
-      await bid.save();
+      await BidTable.findByIdAndUpdate(bidId, { onGoing: false }); // Update in a single DB call
       return res.status(400).json({ error: "Bid has expired" });
     }
 
@@ -72,6 +76,7 @@ export const placeBid = async (req, res) => {
       return res.status(400).json({ error: "Bid exceeds maximum allowed bid" });
     }
 
+    // Update the current bid amount and user
     bid.currentBid = bidAmount;
     bid.currentBidUserId = userId;
     await bid.save();

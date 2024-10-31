@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/createBid', createBid);
 
 // Route to place a bid
-router.post('/placeBid', placeBid);
+router.post('/placeBid/:id', placeBid);
 
 router.get('/onGoingBids', getAllOngoingBids);
 
