@@ -124,3 +124,24 @@ export const getAllUnverifiedBids = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+export const toVerifyBid = async (req, res) => {
+    const { id: bidId } = req.params;
+
+    try {
+        const bid = await BidTable.findById(bidId);
+        if (!bid) {
+            return res.status(404).json({ error: "Bid not found" });
+        }
+
+        bid.bidVerified = true;
+        await bid.save();
+
+        res.status(200).json({
+            message: "Bid verified successfully",
+            bid: bid, // sending the verified bid as part of the response
+        });
+    } catch (error) {
+        console.error("Error in toVerifyBid controller:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
