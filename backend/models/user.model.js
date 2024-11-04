@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema(
             unique: true,
         },
         email: {
-            type: String, // Fixed: Changed 'email' to 'String'
+            type: String, 
+            
             required: true,
             unique: true,
         },

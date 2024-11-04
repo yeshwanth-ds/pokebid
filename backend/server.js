@@ -6,10 +6,10 @@ import bidRoutes from "./routes/bidTable.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import connectToMongoose from "./db/connectMongoDB.js";
 
-
 const app = express();
 
 dotenv.config();
+
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());

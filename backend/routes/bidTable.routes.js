@@ -1,5 +1,9 @@
 import express from 'express';
-import { createBid, getAllOngoingBids, placeBid } from '../controllers/bidTable.controllers.js';
+import { 
+    createBid, 
+    getAllOngoingBids, 
+    placeBid 
+} from '../controllers/bidTable.controllers.js';
 
 const router = express.Router();
 

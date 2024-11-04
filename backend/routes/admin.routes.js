@@ -1,6 +1,14 @@
 import express from "express";
 
-import { adminLogin, adminLogout, createAdminMember, getAllBids, getAllUnverifiedBids, getAllVerifiedBids, toVerifyBid } from "../controllers/admin.controllers.js";
+import { 
+     adminLogin,
+     adminLogout, 
+     createAdminMember, 
+     getAllBids, 
+     getAllUnverifiedBids, 
+     getAllVerifiedBids, 
+     toVerifyBid 
+    } from "../controllers/admin.controllers.js";
 import protectAdminRoute from "../middleware/protectAdminRoute.js";
 
 const router = express.Router();
