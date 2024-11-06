@@ -8,18 +8,15 @@ export const createAdminMember = async (req, res) => {
     try {
         const { userEmail, password, confirmPassword } = req.body;
 
-        // Check if passwords match
         if (password !== confirmPassword) {
             return res.status(400).json({ error: "Passwords don't match" });
         }
 
-        // Check if user email already exists
         const existingUser = await Admin.findOne({ userEmail });
         if (existingUser) {
             return res.status(400).json({ error: "User already exists" });
         }
 
-        // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
