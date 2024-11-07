@@ -61,6 +61,11 @@ export const placeBid = async (req, res) => {
       return res.status(404).json({ error: "Bid not found" });
     }
 
+    // Prevent bid owner from bidding on their own auction
+    if (bid.bidOwnerId.toString() === userId) {
+      return res.status(403).json({ error: "Bid owner cannot place a bid on their own auction" });
+    }
+
     // Check if the bid is still ongoing
     const currentTime = new Date();
     if (bid.expireTime < currentTime) {
@@ -87,6 +92,7 @@ export const placeBid = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 export const getAllOngoingBids = async (req, res) => {
   try {
