@@ -81,6 +81,11 @@ export const placeBid = async (req, res) => {
       return res.status(400).json({ error: "Bid exceeds maximum allowed bid" });
     }
 
+    // Add userId to bidderUserIds array
+    if (!bid.bidderUserIds.includes(userId)) {
+      bid.bidderUserIds.push(userId);
+    }
+
     // Update the current bid amount and user
     bid.currentBid = bidAmount;
     bid.currentBidUserId = userId;

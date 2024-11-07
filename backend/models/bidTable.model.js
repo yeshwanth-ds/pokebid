@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const bidTableSchema = new mongoose.Schema({
   bidOwnerId: {
     type: mongoose.Schema.Types.ObjectId, // Use ObjectId to reference another user document if needed
@@ -54,9 +53,12 @@ const bidTableSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  bidderUserIds: [{ // New field to store all userIds who placed a bid
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 }, { timestamps: true }); // Adds createdAt and updatedAt fields automatically
 
 const BidTable = mongoose.model('BidTable', bidTableSchema);
-
 
 export default BidTable;
