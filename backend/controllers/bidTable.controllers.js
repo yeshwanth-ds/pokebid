@@ -1,4 +1,5 @@
 import BidTable from '../models/bidTable.model.js';
+import User from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
 
 // Create a new bid
@@ -61,15 +62,13 @@ export const placeBid = async (req, res) => {
       return res.status(404).json({ error: "Bid not found" });
     }
 
-    // Prevent bid owner from bidding on their own auction
     if (bid.bidOwnerId.toString() === userId) {
       return res.status(403).json({ error: "Bid owner cannot place a bid on their own auction" });
     }
 
-    // Check if the bid is still ongoing
     const currentTime = new Date();
     if (bid.expireTime < currentTime) {
-      await BidTable.findByIdAndUpdate(bidId, { onGoing: false }); // Update in a single DB call
+      await BidTable.findByIdAndUpdate(bidId, { onGoing: false });
       return res.status(400).json({ error: "Bid has expired" });
     }
 
@@ -81,15 +80,25 @@ export const placeBid = async (req, res) => {
       return res.status(400).json({ error: "Bid exceeds maximum allowed bid" });
     }
 
-    // Add userId to bidderUserIds array
     if (!bid.bidderUserIds.includes(userId)) {
       bid.bidderUserIds.push(userId);
     }
 
-    // Update the current bid amount and user
     bid.currentBid = bidAmount;
     bid.currentBidUserId = userId;
     await bid.save();
+
+    // Update user's recentBids field
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: {
+          recentBids: { bidId, amount: bidAmount, timestamp: new Date() },
+        },
+        $slice: -10, // Optional: Keep only the last 10 bids
+      },
+      { new: true }
+    );
 
     res.status(200).json({ message: "Bid placed successfully", bid });
   } catch (error) {
@@ -97,7 +106,6 @@ export const placeBid = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 export const getAllOngoingBids = async (req, res) => {
   try {
