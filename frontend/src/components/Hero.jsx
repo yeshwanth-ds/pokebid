@@ -30,7 +30,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-300 to-purple-300 rounded-2xl transform rotate-3"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-300 to-blue-300 rounded-2xl transform rotate-3"></div>
           <img
             src={heroimg}
             alt="Rare Pokémon Cards"
