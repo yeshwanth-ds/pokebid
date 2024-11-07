@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import heroimg from '../assets/heroimg.png';
 
 export default function Hero() {
   return (
@@ -31,7 +32,7 @@ export default function Hero() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-300 to-purple-300 rounded-2xl transform rotate-3"></div>
           <img
-            src="/placeholder.svg"
+            src={heroimg}
             alt="Rare Pokémon Cards"
             width={600}
             height={400}
