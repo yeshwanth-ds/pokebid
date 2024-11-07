@@ -2,17 +2,40 @@ import { create } from "zustand";
 import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/users";
+const BIDS_API_URL = "http://localhost:5000/api"; 
 
 axios.defaults.withCredentials = true;
 
 export const useAuthStore = create((set) => ({
+    // Auth-related states
     user: null,
     isAuthenticated: false,
     error: null,
     isLoading: false,
     isCheckingAuth: true,
     message: null,
+// State for ongoing bids
+ongoingBids: [],
+bidsLoading: true,
+bidsError: null,
 
+// Action to fetch ongoing bids
+fetchOngoingBids: async () => {
+  set({ bidsLoading: true, bidsError: null });
+  try {
+    // Fetch ongoing bids from the API
+    const response = await axios.get(`${BIDS_API_URL}/onGoingBids`);
+    if (response.data && Array.isArray(response.data.bids)) {
+      set({ ongoingBids: response.data.bids, bidsLoading: false });
+    } else {
+      set({ bidsError: "No bids found in the response", bidsLoading: false });
+    }
+  } catch (error) {
+    set({ bidsError: error.message, bidsLoading: false });
+  }
+},
+
+    // Authentication actions
     signup: async (fullName, username, email, password, confirmPassword, gender) => {
         set({ isLoading: true, error: null });
         try {
@@ -25,6 +48,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     login: async (username, password) => {
         set({ isLoading: true, error: null });
         try {
@@ -40,6 +64,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     logout: async () => {
         set({ isLoading: true, error: null });
         try {
@@ -50,6 +75,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     verifyEmail: async (code) => {
         set({ isLoading: true, error: null });
         try {
@@ -61,6 +87,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     getProfile: async () => {
         set({ isLoading: true, error: null });
         try {
@@ -70,6 +97,7 @@ export const useAuthStore = create((set) => ({
             set({ error: "Error fetching profile", isLoading: false });
         }
     },
+
     updateProfile: async (updates) => {
         set({ isLoading: true, error: null });
         try {
@@ -80,6 +108,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     deleteUser: async () => {
         set({ isLoading: true, error: null });
         try {
@@ -90,6 +119,7 @@ export const useAuthStore = create((set) => ({
             throw error;
         }
     },
+
     checkAuth: async () => {
         set({ isCheckingAuth: true, error: null });
         try {
@@ -98,5 +128,5 @@ export const useAuthStore = create((set) => ({
         } catch (error) {
             set({ error: null, isCheckingAuth: false, isAuthenticated: false });
         }
-    }
+    },
 }));

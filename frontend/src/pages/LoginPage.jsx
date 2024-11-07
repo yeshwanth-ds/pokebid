@@ -21,7 +21,7 @@ export default function LoginPage() {
       await login(username, password)  // Pass username instead of email
       
       // Redirect to home or dashboard after successful login
-      navigate('/dashboard')  // Replace '/dashboard' with the correct route you want
+      navigate('/auction')  // Replace '/dashboard' with the correct route you want
     } catch (err) {
       console.error("Login failed:", err)
       // Handle any error that occurs during login and update UI accordingly
