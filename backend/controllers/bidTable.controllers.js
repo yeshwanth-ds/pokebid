@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 // Create a new bid
 export const createBid = async (req, res) => {
   try {
-    const { bidName, bidImage, initialBid, maximumBid, minBidAmount, daysToExpire } = req.body; // Include daysToExpire in destructuring
+    const { bidName, bidImage, initialBid, maximumBid, minBidAmount, expireDays } = req.body; // Use expireDays
     
     const token = req.cookies.jwt;
     if (!token) {
@@ -15,8 +15,9 @@ export const createBid = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const bidOwnerId = decoded.userId;
 
+    // Calculate expire time based on expireDays
     const currentDate = new Date();
-    const expireTime = new Date(currentDate.setDate(currentDate.getDate() + daysToExpire)); // Calculate expire time based on daysToExpire
+    const expireTime = new Date(currentDate.setDate(currentDate.getDate() + expireDays));
 
     const newBid = new BidTable({
       bidOwnerId,
@@ -26,7 +27,7 @@ export const createBid = async (req, res) => {
       maximumBid,
       minBidAmount,
       currentBid: initialBid,
-      expireTime: expireTime.toISOString(), // Ensure it is stored as an ISO string
+      expireTime: expireTime.toISOString(), // Store as an ISO string
       onGoing: true,
     });
 
@@ -37,6 +38,7 @@ export const createBid = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Place a bid
 export const placeBid = async (req, res) => {

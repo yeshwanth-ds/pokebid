@@ -6,7 +6,7 @@ import { User, Settings, CreditCard, List, PlusCircle } from 'lucide-react';
 const Sidebar = () => {
   const menuItems = [
     { icon: User, label: 'Profile', href: '/profile' },
-    { icon: PlusCircle, label: 'Create Bid', href: '/create-bid' },
+    { icon: PlusCircle, label: 'Create Bid', href: '/createbid' },
     { icon: List, label: 'My Bids', href: '/my-bids' },
     { icon: CreditCard, label: 'Payment', href: '/payment' },
     { icon: Settings, label: 'Settings', href: '/settings' },
