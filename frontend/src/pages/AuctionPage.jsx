@@ -4,15 +4,39 @@ import Footer from '../components/Footer.jsx';
 import Sidebar from '../components/Sidebar.jsx';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../store/authStore.jsx'; // Import the Zustand store
+import axios from 'axios';
 
 const AuctionPage = () => {
   const { ongoingBids, bidsLoading, bidsError, fetchOngoingBids } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
+  const [bidStatus, setBidStatus] = useState(null); // To show success or error messages
 
   useEffect(() => {
     // Fetch the ongoing bids when the component mounts
     fetchOngoingBids();
   }, [fetchOngoingBids]);
+
+  const handleBidNow = async (bidId, bidName) => {
+    try {
+      // Call the placeBid API endpoint
+      const response = await axios.post(
+        `http://localhost:5000/api/placeBid/${bidId}`,
+        {}, // No need to send data; server handles increment based on minBidAmount
+        { withCredentials: true } // To send cookies (JWT) with the request
+      );
+
+      // Update bid status on success
+      setBidStatus({ success: true, message: `Bid placed successfully on ${bidName}` });
+      // Optionally, refresh the bid list to show the updated currentBid
+      fetchOngoingBids();
+    } catch (error) {
+      // Handle any error that occurs
+      setBidStatus({
+        success: false,
+        message: error.response?.data?.error || 'Failed to place bid. Please try again.',
+      });
+    }
+  };
 
   // Filter the ongoing bids based on search query
   const filteredBids = ongoingBids.filter((bid) =>
@@ -62,6 +86,13 @@ const AuctionPage = () => {
               }}
             />
           </div>
+
+          {/* Show Bid Status */}
+          {bidStatus && (
+            <div style={{ marginBottom: '20px', color: bidStatus.success ? 'green' : 'red' }}>
+              {bidStatus.message}
+            </div>
+          )}
 
           {/* Header Section */}
           <motion.h1
@@ -144,7 +175,7 @@ const AuctionPage = () => {
                       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                       transition: 'background-color 0.3s ease',
                     }}
-                    onClick={() => console.log(`Bid on ${bid.bidName}`)}
+                    onClick={() => handleBidNow(bid._id, bid.bidName)}
                   >
                     Bid Now
                   </motion.button>

@@ -43,7 +43,6 @@ export const createBid = async (req, res) => {
 // Place a bid
 export const placeBid = async (req, res) => {
   try {
-    const { bidAmount } = req.body;
     const { id: bidId } = req.params;
 
     const token = req.cookies.jwt;
@@ -74,11 +73,10 @@ export const placeBid = async (req, res) => {
       return res.status(400).json({ error: "Bid has expired" });
     }
 
-    if (bidAmount <= bid.currentBid || bidAmount < bid.currentBid + bid.minBidAmount) {
-      return res.status(400).json({ error: `Bid must be at least ${bid.currentBid + bid.minBidAmount}` });
-    }
+    // Calculate the new bid amount by adding minBidAmount to the currentBid
+    const newBidAmount = bid.currentBid + bid.minBidAmount;
 
-    if (bidAmount > bid.maximumBid) {
+    if (newBidAmount > bid.maximumBid) {
       return res.status(400).json({ error: "Bid exceeds maximum allowed bid" });
     }
 
@@ -86,7 +84,7 @@ export const placeBid = async (req, res) => {
       bid.bidderUserIds.push(userId);
     }
 
-    bid.currentBid = bidAmount;
+    bid.currentBid = newBidAmount;
     bid.currentBidUserId = userId;
     await bid.save();
 
@@ -95,7 +93,7 @@ export const placeBid = async (req, res) => {
       userId,
       {
         $push: {
-          recentBids: { bidId, amount: bidAmount, timestamp: new Date() },
+          recentBids: { bidId, amount: newBidAmount, timestamp: new Date() },
         },
         $slice: -10, // Optional: Keep only the last 10 bids
       },
@@ -108,6 +106,7 @@ export const placeBid = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 export const getAllOngoingBids = async (req, res) => {
   try {

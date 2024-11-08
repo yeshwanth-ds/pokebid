@@ -1,8 +1,10 @@
-import { useState } from 'react';
+// Header.jsx
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';  // Use react-router-dom Link
 import { Menu, X } from 'lucide-react';
 
+// Header component
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -13,7 +15,7 @@ export default function Header() {
           PokieBid
         </Link>
         <nav className="hidden md:flex space-x-6">
-          <NavLink to="/auctions">Auctions</NavLink>
+          <NavLink to="/auction">Auctions</NavLink>
           <NavLink to="/sell">Sell</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/contact">Contact</NavLink>
@@ -32,7 +34,7 @@ export default function Header() {
           className="md:hidden bg-white py-4"
         >
           <nav className="flex flex-col items-center space-y-4">
-            <NavLink to="/auctions">Auctions</NavLink>
+            <NavLink to="/auction">Auctions</NavLink>
             <NavLink to="/sell">Sell</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/contact">Contact</NavLink>
@@ -43,6 +45,7 @@ export default function Header() {
   );
 }
 
+// NavLink component
 function NavLink({ to, children }) {
   return (
     <Link to={to} className="text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200">
